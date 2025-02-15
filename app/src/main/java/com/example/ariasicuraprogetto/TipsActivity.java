@@ -1,4 +1,4 @@
-package com.example.ariasicura;
+package com.example.ariasicuraprogetto;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;

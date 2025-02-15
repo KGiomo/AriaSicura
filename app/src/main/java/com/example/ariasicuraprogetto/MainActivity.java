@@ -1,4 +1,4 @@
-package com.example.ariasicura;
+package com.example.ariasicuraprogetto;
 
 import android.content.Intent;
 import android.os.Bundle;
