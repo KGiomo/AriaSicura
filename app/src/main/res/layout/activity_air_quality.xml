@@ -1,38 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
+
+    <!-- EditText per inserire il nome della città manualmente-->
+
+    <!-- Spinner per selezionare la nazione -->
 
     <EditText
         android:id="@+id/cityEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Inserisci una città" />
+        android:layout_marginBottom="8dp"
+        android:hint="Inserisci il nome della città"
+        android:inputType="text" />
 
+    <Spinner
+        android:id="@+id/countrySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Spinner per selezionare lo stato -->
+    <Spinner
+        android:id="@+id/stateSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Spinner per selezionare la città -->
+    <Spinner
+        android:id="@+id/citySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Pulsante per usare la geolocalizzazione -->
+    <Button
+        android:id="@+id/locationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Usa la mia posizione"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Pulsante per cercare la qualità dell'aria -->
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerca" />
+        android:text="Cerca Qualità dell'Aria"
+        android:layout_marginBottom="16dp"/>
 
+    <!-- TextView per mostrare il nome della città -->
     <TextView
         android:id="@+id/cityTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Città: " />
+        android:text="Città: -"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
 
+    <!-- TextView per mostrare l'AQI -->
     <TextView
         android:id="@+id/aqiTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AQI: " />
+        android:text="AQI: -"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
 
+    <!-- TextView per mostrare l'inquinante principale -->
     <TextView
         android:id="@+id/pollutionTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Inquinante principale: " />
+        android:text="Inquinante principale: -"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"/>
 
 </LinearLayout>
