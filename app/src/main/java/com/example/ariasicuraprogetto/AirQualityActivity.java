@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import android.util.Log;
 
 public class AirQualityActivity extends AppCompatActivity {
 
@@ -85,6 +86,21 @@ public class AirQualityActivity extends AppCompatActivity {
             public void onNothingSelected(android.widget.AdapterView<?> parent) {
             }
         });
+
+        // Listener per il cambio di stato -> aggiorna le città
+        stateSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                String selectedState = stateSpinner.getSelectedItem().toString();
+                String selectedCountry = countrySpinner.getSelectedItem().toString();
+                loadCities(selectedState, selectedCountry);
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
+        });
+
 
         // Listener per il pulsante di ricerca
         searchButton.setOnClickListener(v -> {
@@ -164,7 +180,6 @@ public class AirQualityActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-
     private void fetchAirQualityData(String city, String state, String country) {
         String url = String.format(BASE_URL_CITY, city, state, country);
 
@@ -172,28 +187,45 @@ public class AirQualityActivity extends AppCompatActivity {
                 Request.Method.GET, url, null,
                 response -> {
                     try {
+                        if (!response.has("data")) {
+                            Toast.makeText(AirQualityActivity.this, "Dati non disponibili", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         JSONObject data = response.getJSONObject("data");
+
+                        if (!data.has("current")) {
+                            Toast.makeText(AirQualityActivity.this, "Nessun dato di qualità dell'aria disponibile", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         JSONObject current = data.getJSONObject("current");
+
+                        if (!current.has("pollution")) {
+                            Toast.makeText(AirQualityActivity.this, "Nessun dato di inquinamento disponibile", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         JSONObject pollution = current.getJSONObject("pollution");
 
                         String cityName = data.getString("city");
                         int aqi = pollution.getInt("aqius");
                         String mainPollutant = pollution.getString("mainus");
 
-                        // Aggiornamento UI
                         cityTextView.setText("Città: " + cityName);
                         aqiTextView.setText("AQI: " + aqi);
                         pollutionTextView.setText("Inquinante principale: " + mainPollutant);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(AirQualityActivity.this, "Errore nei dati", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AirQualityActivity.this, "Errore nei dati ricevuti", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(AirQualityActivity.this, "Errore di connessione", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(AirQualityActivity.this, "Errore di connessione o dati non disponibili", Toast.LENGTH_SHORT).show());
 
         requestQueue.add(request);
     }
+
 
     private void loadCountries() {
         List<String> countries = Arrays.asList("Italy", "France", "Spain", "Germany", "United States");
@@ -204,9 +236,13 @@ public class AirQualityActivity extends AppCompatActivity {
     private void loadStates(String country) {
         String url = String.format(BASE_URL_STATES, country);
 
+        Log.d("DEBUG", "URL Stati: " + url);
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
+                        Log.d("DEBUG", "Risposta Stati: " + response.toString()); // Stampa la risposta JSON
+
                         JSONArray statesArray = response.getJSONArray("data");
                         ArrayList<String> statesList = new ArrayList<>();
 
@@ -214,28 +250,43 @@ public class AirQualityActivity extends AppCompatActivity {
                             statesList.add(statesArray.getJSONObject(i).getString("state"));
                         }
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statesList);
-                        stateSpinner.setAdapter(adapter);
+                        if (statesList.isEmpty()) {
+                            statesList.add("Nessuno stato disponibile");
+                        }
 
-                        // Carica le città per il primo stato selezionato
-                        if (!statesList.isEmpty()) {
+                        runOnUiThread(() -> {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statesList);
+                            stateSpinner.setAdapter(adapter);
+                        });
+
+                        // Carica le città per il primo stato disponibile
+                        if (!statesList.get(0).equals("Nessuno stato disponibile")) {
                             loadCities(statesList.get(0), country);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Log.e("DEBUG", "Errore parsing Stati: " + e.getMessage());
+                        Toast.makeText(this, "Errore nel parsing degli stati", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(this, "Errore nel caricamento degli stati", Toast.LENGTH_SHORT).show());
+                error -> {
+                    Log.e("DEBUG", "Errore HTTP Stati: " + error.toString());
+                    Toast.makeText(this, "Errore nel caricamento degli stati", Toast.LENGTH_SHORT).show();
+                });
 
         requestQueue.add(request);
     }
 
+
     private void loadCities(String state, String country) {
         String url = String.format(BASE_URL_CITIES, state, country);
+        Log.d("DEBUG", "URL Città: " + url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
+                        Log.d("DEBUG", "Risposta Città: " + response.toString()); // Stampa la risposta JSON
+
                         JSONArray citiesArray = response.getJSONArray("data");
                         ArrayList<String> citiesList = new ArrayList<>();
 
@@ -243,14 +294,32 @@ public class AirQualityActivity extends AppCompatActivity {
                             citiesList.add(citiesArray.getJSONObject(i).getString("city"));
                         }
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, citiesList);
-                        citySpinner.setAdapter(adapter);
+                        if (citiesList.isEmpty()) {
+                            citiesList.add("Nessuna città disponibile");
+                        }
+
+                        runOnUiThread(() -> {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, citiesList);
+                            citySpinner.setAdapter(adapter);
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Log.e("DEBUG", "Errore parsing Città: " + e.getMessage());
+                        Toast.makeText(this, "Errore nel parsing delle città", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(this, "Errore nel caricamento delle città", Toast.LENGTH_SHORT).show());
+                error -> {
+                    if (error instanceof com.android.volley.ClientError && error.networkResponse != null && error.networkResponse.statusCode == 429) {
+                        // Errore 429: troppo presto, ritenta dopo un breve intervallo
+                        Log.e("DEBUG", "Errore 429, retrying...");
+                        Toast.makeText(this, "Troppi tentativi. Riprova più tardi", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Log.e("DEBUG", "Errore HTTP Città: " + error.toString());
+                    Toast.makeText(this, "Errore nel caricamento delle città", Toast.LENGTH_SHORT).show();
+                });
 
         requestQueue.add(request);
     }
+
 }

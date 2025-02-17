@@ -9,8 +9,6 @@
 
     <!-- EditText per inserire il nome della città manualmente-->
 
-    <!-- Spinner per selezionare la nazione -->
-
     <EditText
         android:id="@+id/cityEditText"
         android:layout_width="match_parent"
@@ -19,6 +17,7 @@
         android:hint="Inserisci il nome della città"
         android:inputType="text" />
 
+    <!-- Spinner per selezionare la nazione -->
     <Spinner
         android:id="@+id/countrySpinner"
         android:layout_width="match_parent"
