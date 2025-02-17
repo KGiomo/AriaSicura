@@ -228,7 +228,7 @@ public class AirQualityActivity extends AppCompatActivity {
 
 
     private void loadCountries() {
-        List<String> countries = Arrays.asList("Italy", "France", "Spain", "Germany", "United States");
+        List<String> countries = Arrays.asList("Italy");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, countries);
         countrySpinner.setAdapter(adapter);
     }
@@ -310,8 +310,8 @@ public class AirQualityActivity extends AppCompatActivity {
                 },
                 error -> {
                     if (error instanceof com.android.volley.ClientError && error.networkResponse != null && error.networkResponse.statusCode == 429) {
-                        // Errore 429: troppo presto, ritenta dopo un breve intervallo
-                        Log.e("DEBUG", "Errore 429, retrying...");
+                        // Errore: troppo presto, ritenta dopo un breve intervallo
+                        Log.e("DEBUG", "Errore, riprovo...");
                         Toast.makeText(this, "Troppi tentativi. Riprova più tardi", Toast.LENGTH_SHORT).show();
                         return;
                     }
