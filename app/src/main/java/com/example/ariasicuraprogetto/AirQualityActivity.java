@@ -12,7 +12,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -228,6 +227,7 @@ public class AirQualityActivity extends AppCompatActivity {
 
 
     private void loadCountries() {
+        // Lista degli stati che si vogliono Visualizzare
         List<String> countries = Arrays.asList("Italy");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, countries);
         countrySpinner.setAdapter(adapter);
