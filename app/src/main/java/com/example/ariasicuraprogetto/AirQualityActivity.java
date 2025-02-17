@@ -39,7 +39,7 @@ public class AirQualityActivity extends AppCompatActivity {
 
     private EditText cityEditText;
     private Spinner countrySpinner, stateSpinner, citySpinner;
-    private TextView cityTextView, aqiTextView, pollutionTextView;
+    private TextView cityTextView, aqiTextView, pollutionTextView, temperatureTextView, pressureTextView, humidityTextView, meteoTextView;
     private Button searchButton, locationButton;
     private RequestQueue requestQueue;
 
@@ -65,6 +65,9 @@ public class AirQualityActivity extends AppCompatActivity {
         pollutionTextView = findViewById(R.id.pollutionTextView);
         searchButton = findViewById(R.id.searchButton);
         locationButton = findViewById(R.id.locationButton);
+        temperatureTextView = findViewById(R.id.temperatureTextView);
+        pressureTextView = findViewById(R.id.pressureTextView);
+        humidityTextView = findViewById(R.id.humidityTextView);
 
         // Inizializzazione Volley
         requestQueue = Volley.newRequestQueue(this);
@@ -155,19 +158,28 @@ public class AirQualityActivity extends AppCompatActivity {
                             JSONObject data = response.getJSONObject("data");
                             JSONObject current = data.getJSONObject("current");
                             JSONObject pollution = current.getJSONObject("pollution");
+                            JSONObject weather = current.getJSONObject("weather");
 
                             String cityName = data.getString("city");
                             int aqi = pollution.getInt("aqius");
                             String mainPollutant = pollution.getString("mainus");
+                            double temperature = weather.getDouble("tp");  // Cambiato da "ts" a "tp"
+                            int pressure = weather.getInt("pr");
+                            int humidity = weather.getInt("hu");
 
                             cityTextView.setText("Città: " + cityName);
                             aqiTextView.setText("AQI: " + aqi);
                             pollutionTextView.setText("Inquinante principale: " + mainPollutant);
+                            temperatureTextView.setText("Temperatura: " + temperature + "°");
+                            pressureTextView.setText("Pressione: " + pressure + "hPa");
+                            humidityTextView.setText("Umidità: " + humidity + "%");
+
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(AirQualityActivity.this, "Errore nei dati", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AirQualityActivity.this, "Errore nei dati ricevuti", Toast.LENGTH_SHORT).show();
                         }
                     }
+
                 },
                 new Response.ErrorListener() {
                     @Override
@@ -205,15 +217,27 @@ public class AirQualityActivity extends AppCompatActivity {
                             return;
                         }
 
+                        if (!current.has("weather")) {
+                            Toast.makeText(AirQualityActivity.this, "Nessun dato sul meteo disponibile", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         JSONObject pollution = current.getJSONObject("pollution");
+                        JSONObject weather = current.getJSONObject("weather");
 
                         String cityName = data.getString("city");
                         int aqi = pollution.getInt("aqius");
                         String mainPollutant = pollution.getString("mainus");
+                        double temperature = weather.getDouble("tp");
+                        int pressure = weather.getInt("pr");
+                        int humidity = weather.getInt("hu");
 
                         cityTextView.setText("Città: " + cityName);
                         aqiTextView.setText("AQI: " + aqi);
                         pollutionTextView.setText("Inquinante principale: " + mainPollutant);
+                        temperatureTextView.setText("Temperatura: " + temperature + "°C");
+                        pressureTextView.setText("Pressione: " + pressure + " hPa");
+                        humidityTextView.setText("Umidità: " + humidity + "%");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -224,6 +248,7 @@ public class AirQualityActivity extends AppCompatActivity {
 
         requestQueue.add(request);
     }
+
 
 
     private void loadCountries() {
@@ -321,5 +346,4 @@ public class AirQualityActivity extends AppCompatActivity {
 
         requestQueue.add(request);
     }
-
 }
