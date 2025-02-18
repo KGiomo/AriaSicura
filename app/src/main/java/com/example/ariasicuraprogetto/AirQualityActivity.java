@@ -46,6 +46,8 @@ public class AirQualityActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
 
     private static final String API_KEY = BuildConfig.AIRVISUAL_API_KEY;
+
+    private static final String BASE_URL_COUNTRIES = "https://api.airvisual.com/v2/countries?key=" + API_KEY;
     private static final String BASE_URL_CITY = "https://api.airvisual.com/v2/city?city=%s&state=%s&country=%s&key=" + API_KEY;
     private static final String BASE_URL_STATES = "https://api.airvisual.com/v2/states?country=%s&key=" + API_KEY;
     private static final String BASE_URL_CITIES = "https://api.airvisual.com/v2/cities?state=%s&country=%s&key=" + API_KEY;
@@ -252,11 +254,49 @@ public class AirQualityActivity extends AppCompatActivity {
 
 
     private void loadCountries() {
-        // Lista degli stati che si vogliono Visualizzare
-        List<String> countries = Arrays.asList("Italy");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, countries);
-        countrySpinner.setAdapter(adapter);
+        String url = BASE_URL_COUNTRIES;
+
+        Log.d("DEBUG", "URL Paesi: " + url);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        Log.d("DEBUG", "Risposta Paesi: " + response.toString());
+
+                        JSONArray countriesArray = response.getJSONArray("data");
+                        ArrayList<String> countriesList = new ArrayList<>();
+
+                        for (int i = 0; i < countriesArray.length(); i++) {
+                            countriesList.add(countriesArray.getJSONObject(i).getString("country"));
+                        }
+
+                        if (countriesList.isEmpty()) {
+                            countriesList.add("Nessun paese disponibile");
+                        }
+
+                        runOnUiThread(() -> {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, countriesList);
+                            countrySpinner.setAdapter(adapter);
+                        });
+
+                        if (!countriesList.get(0).equals("Nessun paese disponibile")) {
+                            loadStates(countriesList.get(0));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e("DEBUG", "Errore parsing Paesi: " + e.getMessage());
+                        Toast.makeText(this, "Errore nel parsing dei paesi", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e("DEBUG", "Errore HTTP Paesi: " + error.toString());
+                    Toast.makeText(this, "Errore nel caricamento dei paesi", Toast.LENGTH_SHORT).show();
+                });
+
+        requestQueue.add(request);
     }
+
 
     private void loadStates(String country) {
         String url = String.format(BASE_URL_STATES, country);
