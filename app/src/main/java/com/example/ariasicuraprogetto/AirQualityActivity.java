@@ -3,10 +3,7 @@ package com.example.ariasicuraprogetto;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
@@ -18,8 +15,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +28,7 @@ public class AirQualityActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://api.airvisual.com/v2/";
 
     private Spinner countrySpinner, stateSpinner, citySpinner;
-    private boolean isInitialCountryLoad = true; // 新增标志位
+    private boolean isInitialCountryLoad = true;
     private ArrayAdapter<String> countryAdapter, stateAdapter, cityAdapter;
     private RequestQueue requestQueue;
     private static final String API_KEY = BuildConfig.AIRVISUAL_API_KEY;

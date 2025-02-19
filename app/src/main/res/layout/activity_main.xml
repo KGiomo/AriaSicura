@@ -8,52 +8,48 @@
     tools:context=".MainActivity">
 
     <!-- Title TextView -->
+
+    <!-- Button for Air Quality Info -->
+
+    <!-- Button for Environmental Tips -->
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:text="Aria Sicura"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginTop="32dp"
         app:layout_constraintBottom_toTopOf="@+id/btnAirQuality"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Button for Air Quality Info -->
     <Button
         android:id="@+id/btnAirQuality"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="199dp"
+        android:onClick="openAirQualityActivity"
         android:text="Qualità dell'Aria"
         app:layout_constraintBottom_toTopOf="@+id/btnTips"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        android:onClick="openAirQualityActivity"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
-    <!-- Button for Environmental Tips -->
     <Button
         android:id="@+id/btnTips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="104dp"
+        android:onClick="openTipsActivity"
         android:text="Consigli"
-        app:layout_constraintBottom_toTopOf="@+id/btnWidget"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAirQuality"
-        android:onClick="openTipsActivity"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnAirQuality" />
 
     <!-- Button for Widgets -->
-    <Button
-        android:id="@+id/btnWidget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Widget"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnTips"
-        android:onClick="openWidgetActivity"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

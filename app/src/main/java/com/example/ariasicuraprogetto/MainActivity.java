@@ -31,10 +31,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Metodo per aprire l'Activity WidgetActivity
-    public void openWidgetActivity(View view) {
-        Log.d(TAG, "Opening WidgetActivity");
-        Intent intent = new Intent(MainActivity.this, WidgetActivity.class);
-        startActivity(intent);
-    }
 }
