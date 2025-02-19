@@ -1,8 +1,5 @@
 package com.example.ariasicuraprogetto;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -10,35 +7,35 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView;
 import android.widget.Toast;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import android.util.Log;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 public class AirQualityActivity extends AppCompatActivity {
 
+    private static final String BASE_URL = "https://api.airvisual.com/v2/";
+
     private EditText cityEditText;
     private Spinner countrySpinner, stateSpinner, citySpinner;
+    private boolean isInitialCountryLoad = true; // 新增标志位
+    private ArrayAdapter<String> countryAdapter, stateAdapter, cityAdapter;
     private TextView cityTextView, aqiTextView, pollutionTextView, temperatureTextView, pressureTextView, humidityTextView, meteoTextView;
     private Button searchButton, locationButton;
     private RequestQueue requestQueue;
@@ -47,10 +44,6 @@ public class AirQualityActivity extends AppCompatActivity {
 
     private static final String API_KEY = BuildConfig.AIRVISUAL_API_KEY;
 
-    private static final String BASE_URL_COUNTRIES = "https://api.airvisual.com/v2/countries?key=" + API_KEY;
-    private static final String BASE_URL_CITY = "https://api.airvisual.com/v2/city?city=%s&state=%s&country=%s&key=" + API_KEY;
-    private static final String BASE_URL_STATES = "https://api.airvisual.com/v2/states?country=%s&key=" + API_KEY;
-    private static final String BASE_URL_CITIES = "https://api.airvisual.com/v2/cities?state=%s&country=%s&key=" + API_KEY;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,312 +71,154 @@ public class AirQualityActivity extends AppCompatActivity {
         // Caricamento della lista dei paesi
         loadCountries();
 
-        // Listener per il cambio di paese -> aggiorna gli stati
-        countrySpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                String selectedCountry = countrySpinner.getSelectedItem().toString();
-                loadStates(selectedCountry);
-            }
+        countryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        stateAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        cityAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
 
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-            }
-        });
-
-        // Listener per il cambio di stato -> aggiorna le città
-        stateSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                String selectedState = stateSpinner.getSelectedItem().toString();
-                String selectedCountry = countrySpinner.getSelectedItem().toString();
-                loadCities(selectedState, selectedCountry);
-            }
-
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-            }
-        });
-
-
-        // Listener per il pulsante di ricerca
-        searchButton.setOnClickListener(v -> {
-            String city = cityEditText.getText().toString().trim();
-            String state = stateSpinner.getSelectedItem().toString();
-            String country = countrySpinner.getSelectedItem().toString();
-            if (!city.isEmpty()) {
-                fetchAirQualityData(city, state, country);
-            } else {
-                Toast.makeText(AirQualityActivity.this, "Inserisci una città", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Pulsante per ottenere la posizione attuale
-        locationButton.setOnClickListener(v -> getCurrentLocation());
+        setupSpinners();
+        loadCountries();
     }
 
-    private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    private void setupSpinners() {
 
-            // Richiede i permessi se non sono stati concessi
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            return;
-        }
+        countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+        countrySpinner.setAdapter(countryAdapter);
+        stateSpinner.setAdapter(stateAdapter);
+        citySpinner.setAdapter(cityAdapter);
+
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    Toast.makeText(AirQualityActivity.this, "Lat: " + latitude + ", Lon: " + longitude, Toast.LENGTH_SHORT).show();
-
-                    // Chiamata all'API con le coordinate attuali
-                    fetchAirQualityByCoordinates(latitude, longitude);
-                } else {
-                    Toast.makeText(AirQualityActivity.this, "Posizione non disponibile", Toast.LENGTH_SHORT).show();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isInitialCountryLoad) {
+                    isInitialCountryLoad = false;
+                    return;
+                }
+                String selectedCountry = parent.getItemAtPosition(position).toString();
+                resetStateAndCitySpinners();
+                try {
+                    loadStates(selectedCountry);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
                 }
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                resetCitySpinner();
+                String selectedCountry = countrySpinner.getSelectedItem().toString();
+                String selectedState = parent.getItemAtPosition(position).toString();
+                try {
+                    loadCities(selectedCountry, selectedState);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
-    private void fetchAirQualityByCoordinates(double latitude, double longitude) {
-        String url = String.format("https://api.airvisual.com/v2/nearest_city?lat=%f&lon=%f&key=" + API_KEY, latitude, longitude);
-
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject data = response.getJSONObject("data");
-                            JSONObject current = data.getJSONObject("current");
-                            JSONObject pollution = current.getJSONObject("pollution");
-                            JSONObject weather = current.getJSONObject("weather");
-
-                            String cityName = data.getString("city");
-                            int aqi = pollution.getInt("aqius");
-                            String mainPollutant = pollution.getString("mainus");
-                            double temperature = weather.getDouble("tp");  // Cambiato da "ts" a "tp"
-                            int pressure = weather.getInt("pr");
-                            int humidity = weather.getInt("hu");
-
-                            cityTextView.setText("Città: " + cityName);
-                            aqiTextView.setText("AQI: " + aqi);
-                            pollutionTextView.setText("Inquinante principale: " + mainPollutant);
-                            temperatureTextView.setText("Temperatura: " + temperature + "°");
-                            pressureTextView.setText("Pressione: " + pressure + "hPa");
-                            humidityTextView.setText("Umidità: " + humidity + "%");
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(AirQualityActivity.this, "Errore nei dati ricevuti", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AirQualityActivity.this, "Errore di connessione", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        requestQueue.add(request);
+    private void resetStateAndCitySpinners() {
+        stateAdapter.clear();
+        cityAdapter.clear();
+        stateSpinner.setEnabled(false);
+        citySpinner.setEnabled(false);
     }
-
-    private void fetchAirQualityData(String city, String state, String country) {
-        String url = String.format(BASE_URL_CITY, city, state, country);
-
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET, url, null,
-                response -> {
-                    try {
-                        if (!response.has("data")) {
-                            Toast.makeText(AirQualityActivity.this, "Dati non disponibili", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        JSONObject data = response.getJSONObject("data");
-
-                        if (!data.has("current")) {
-                            Toast.makeText(AirQualityActivity.this, "Nessun dato di qualità dell'aria disponibile", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        JSONObject current = data.getJSONObject("current");
-
-                        if (!current.has("pollution")) {
-                            Toast.makeText(AirQualityActivity.this, "Nessun dato di inquinamento disponibile", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        if (!current.has("weather")) {
-                            Toast.makeText(AirQualityActivity.this, "Nessun dato sul meteo disponibile", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        JSONObject pollution = current.getJSONObject("pollution");
-                        JSONObject weather = current.getJSONObject("weather");
-
-                        String cityName = data.getString("city");
-                        int aqi = pollution.getInt("aqius");
-                        String mainPollutant = pollution.getString("mainus");
-                        double temperature = weather.getDouble("tp");
-                        int pressure = weather.getInt("pr");
-                        int humidity = weather.getInt("hu");
-
-                        cityTextView.setText("Città: " + cityName);
-                        aqiTextView.setText("AQI: " + aqi);
-                        pollutionTextView.setText("Inquinante principale: " + mainPollutant);
-                        temperatureTextView.setText("Temperatura: " + temperature + "°C");
-                        pressureTextView.setText("Pressione: " + pressure + " hPa");
-                        humidityTextView.setText("Umidità: " + humidity + "%");
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(AirQualityActivity.this, "Errore nei dati ricevuti", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> Toast.makeText(AirQualityActivity.this, "Errore di connessione o dati non disponibili", Toast.LENGTH_SHORT).show());
-
-        requestQueue.add(request);
+    private void resetCitySpinner() {
+        cityAdapter.clear();
+        citySpinner.setEnabled(false);
     }
-
-
-
     private void loadCountries() {
-        String url = BASE_URL_COUNTRIES;
-
-        Log.d("DEBUG", "URL Paesi: " + url);
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+        String url = BASE_URL + "countries?key=" + API_KEY;
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET, url, null,
                 response -> {
                     try {
-                        Log.d("DEBUG", "Risposta Paesi: " + response.toString());
-
-                        JSONArray countriesArray = response.getJSONArray("data");
-                        ArrayList<String> countriesList = new ArrayList<>();
-
-                        for (int i = 0; i < countriesArray.length(); i++) {
-                            countriesList.add(countriesArray.getJSONObject(i).getString("country"));
+                        JSONArray data = response.getJSONArray("data");
+                        countryAdapter.clear();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject country = data.getJSONObject(i);
+                            countryAdapter.add(country.getString("country"));
                         }
+                        countrySpinner.setEnabled(true);
 
-                        if (countriesList.isEmpty()) {
-                            countriesList.add("Nessun paese disponibile");
+
+                        if (countrySpinner.getSelectedItem() == null && countryAdapter.getCount() > 0) {
+                            countrySpinner.setSelection(0, false);
                         }
-
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, countriesList);
-                            countrySpinner.setAdapter(adapter);
-                        });
-
-                        if (!countriesList.get(0).equals("Nessun paese disponibile")) {
-                            loadStates(countriesList.get(0));
-                        }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.e("DEBUG", "Errore parsing Paesi: " + e.getMessage());
-                        Toast.makeText(this, "Errore nel parsing dei paesi", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
-                    Log.e("DEBUG", "Errore HTTP Paesi: " + error.toString());
-                    Toast.makeText(this, "Errore nel caricamento dei paesi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading countries", Toast.LENGTH_SHORT).show();
+                    resetStateAndCitySpinners();
                 });
-
         requestQueue.add(request);
     }
 
-
-    private void loadStates(String country) {
-        String url = String.format(BASE_URL_STATES, country);
-
-        Log.d("DEBUG", "URL Stati: " + url);
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+    private void loadStates(String country) throws UnsupportedEncodingException {
+        String url = BASE_URL + "states?country=" + URLEncoder.encode(country, "UTF-8") + "&key=" + API_KEY;
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET, url, null,
                 response -> {
                     try {
-                        Log.d("DEBUG", "Risposta Stati: " + response.toString()); // Stampa la risposta JSON
-
-                        JSONArray statesArray = response.getJSONArray("data");
-                        ArrayList<String> statesList = new ArrayList<>();
-
-                        for (int i = 0; i < statesArray.length(); i++) {
-                            statesList.add(statesArray.getJSONObject(i).getString("state"));
+                        JSONArray data = response.getJSONArray("data");
+                        stateAdapter.clear();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject state = data.getJSONObject(i);
+                            stateAdapter.add(state.getString("state"));
                         }
-
-                        if (statesList.isEmpty()) {
-                            statesList.add("Nessuno stato disponibile");
-                        }
-
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statesList);
-                            stateSpinner.setAdapter(adapter);
-                        });
-
-                        // Carica le città per il primo stato disponibile
-                        if (!statesList.get(0).equals("Nessuno stato disponibile")) {
-                            loadCities(statesList.get(0), country);
+                        stateSpinner.setEnabled(!stateAdapter.isEmpty());
+                        if (!stateAdapter.isEmpty()) {
+                            stateSpinner.setSelection(0, false); // 不自动触发事件
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.e("DEBUG", "Errore parsing Stati: " + e.getMessage());
-                        Toast.makeText(this, "Errore nel parsing degli stati", Toast.LENGTH_SHORT).show();
+                        stateSpinner.setEnabled(false);
                     }
                 },
                 error -> {
-                    Log.e("DEBUG", "Errore HTTP Stati: " + error.toString());
-                    Toast.makeText(this, "Errore nel caricamento degli stati", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading states", Toast.LENGTH_SHORT).show();
+                    stateSpinner.setEnabled(false);
+                    resetCitySpinner();
                 });
-
         requestQueue.add(request);
     }
 
-
-    private void loadCities(String state, String country) {
-        String url = String.format(BASE_URL_CITIES, state, country);
-        Log.d("DEBUG", "URL Città: " + url);
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+    private void loadCities(String country, String state) throws UnsupportedEncodingException {
+        String url = BASE_URL + "cities?state=" + URLEncoder.encode(state, "UTF-8")
+                + "&country=" + URLEncoder.encode(country, "UTF-8")
+                + "&key=" + API_KEY;
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET, url, null,
                 response -> {
                     try {
-                        Log.d("DEBUG", "Risposta Città: " + response.toString()); // Stampa la risposta JSON
-
-                        JSONArray citiesArray = response.getJSONArray("data");
-                        ArrayList<String> citiesList = new ArrayList<>();
-
-                        for (int i = 0; i < citiesArray.length(); i++) {
-                            citiesList.add(citiesArray.getJSONObject(i).getString("city"));
+                        JSONArray data = response.getJSONArray("data");
+                        cityAdapter.clear();
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject city = data.getJSONObject(i);
+                            cityAdapter.add(city.getString("city"));
                         }
-
-                        if (citiesList.isEmpty()) {
-                            citiesList.add("Nessuna città disponibile");
-                        }
-
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, citiesList);
-                            citySpinner.setAdapter(adapter);
-                        });
+                        citySpinner.setEnabled(!cityAdapter.isEmpty());
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.e("DEBUG", "Errore parsing Città: " + e.getMessage());
-                        Toast.makeText(this, "Errore nel parsing delle città", Toast.LENGTH_SHORT).show();
+                        citySpinner.setEnabled(false);
                     }
                 },
                 error -> {
-                    if (error instanceof com.android.volley.ClientError && error.networkResponse != null && error.networkResponse.statusCode == 429) {
-                        // Errore: troppo presto, ritenta dopo un breve intervallo
-                        Log.e("DEBUG", "Errore, riprovo...");
-                        Toast.makeText(this, "Troppi tentativi. Riprova più tardi", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    Log.e("DEBUG", "Errore HTTP Città: " + error.toString());
-                    Toast.makeText(this, "Errore nel caricamento delle città", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading cities", Toast.LENGTH_SHORT).show();
+                    citySpinner.setEnabled(false);
                 });
-
         requestQueue.add(request);
     }
 }
