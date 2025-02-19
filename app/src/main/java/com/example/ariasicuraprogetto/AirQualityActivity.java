@@ -1,6 +1,8 @@
 package com.example.ariasicuraprogetto;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -10,8 +12,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import android.location.Location;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,6 +48,9 @@ public class AirQualityActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private static final String API_KEY = BuildConfig.AIRVISUAL_API_KEY;
 
+    private FusedLocationProviderClient fusedLocationClient;
+    private Location lastLocation;
+
     private Button btnSearch;
     private TextView tvResult;
 
@@ -43,9 +59,16 @@ public class AirQualityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_quality);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        Button locationButton = findViewById(R.id.locationButton);
+        locationButton.setOnClickListener(v -> getLocation());
+
         // 初始化新控件
         btnSearch = findViewById(R.id.btnSearch);
         tvResult = findViewById(R.id.tvResult);
+
+
         // 设置搜索按钮点击监听
         btnSearch.setOnClickListener(v -> {
             if (citySpinner.getSelectedItem() != null) {
@@ -73,6 +96,83 @@ public class AirQualityActivity extends AppCompatActivity {
         loadCountries();
 
     }
+
+    private void getLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            lastLocation = location;
+                            double latitude = lastLocation.getLatitude();
+                            double longitude = lastLocation.getLongitude();
+
+                            fetchCityDataFromCoordinates(latitude, longitude);
+                        }
+                    });
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+    }
+
+    private void fetchCityDataFromCoordinates(double latitude, double longitude) {
+        // Prende i dati della stazione più vicina
+        String url = BASE_URL + "nearest_city?lat=" + latitude + "&lon=" + longitude + "&key=" + API_KEY;
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONObject data = response.getJSONObject("data");
+                        JSONObject current = data.getJSONObject("current");
+
+                        JSONObject pollution = current.getJSONObject("pollution");
+                        String aqi = pollution.getString("aqius");
+                        String mainPollutant = pollution.getString("mainus");
+
+                        JSONObject weather = current.getJSONObject("weather");
+                        String temp = weather.getString("tp") + "°C";
+                        String pressure = weather.getString("pr") + " hPa";
+                        String humidity = weather.getString("hu") + "%";
+
+
+                        Log.d("API Response", response.toString());
+                        String resultText = String.format(
+                                "AQI: %s\nInquinanti principali: %s\n\nTemperatura: %s\nPressione: %s\nUmidità: %s",
+                                aqi, mainPollutant, temp, pressure, humidity
+                        );
+
+                        tvResult.setText(resultText);
+                        tvResult.setVisibility(View.VISIBLE);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Errore nell'analisi dei dati", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(this, "Impossibile ottenere i dati", Toast.LENGTH_SHORT).show();
+                    tvResult.setVisibility(View.GONE);
+                });
+
+        requestQueue.add(request);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocation();
+            } else {
+                Toast.makeText(this, "Permesso di geolocalizzazione negato", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     // 新增：获取城市详细数据
     private void fetchCityData(String country, String state, String city) {
