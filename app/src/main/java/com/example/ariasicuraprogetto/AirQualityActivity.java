@@ -107,7 +107,7 @@ public class AirQualityActivity extends AppCompatActivity {
 
                         // 显示结果
                         String resultText = String.format(
-                                "城市: %s\nAQI: %s\n主要污染物: %s\n\n温度: %s\n气压: %s\n湿度: %s",
+                                "Città: %s\nAQI: %s\nInquinanti principali: %s\n\nTemperatura: %s\nPressione: %s\nUmidità: %s",
                                 city, aqi, mainPollutant, temp, pressure, humidity
                         );
 
@@ -116,11 +116,11 @@ public class AirQualityActivity extends AppCompatActivity {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "数据解析错误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Errore nell'analisi dei dati", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
-                    Toast.makeText(this, "获取数据失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Impossibile ottenere i dati", Toast.LENGTH_SHORT).show();
                     tvResult.setVisibility(View.GONE);
                 });
 
@@ -228,7 +228,7 @@ public class AirQualityActivity extends AppCompatActivity {
                         }
                         stateSpinner.setEnabled(!stateAdapter.isEmpty());
                         if (!stateAdapter.isEmpty()) {
-                            stateSpinner.setSelection(0, false); // 不自动触发事件
+                            stateSpinner.setSelection(0, false);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
