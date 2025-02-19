@@ -3,8 +3,10 @@ package com.example.ariasicuraprogetto;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -33,11 +35,27 @@ public class AirQualityActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private static final String API_KEY = BuildConfig.AIRVISUAL_API_KEY;
 
+    private Button btnSearch;
+    private TextView tvResult;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_quality);
+
+        // 初始化新控件
+        btnSearch = findViewById(R.id.btnSearch);
+        tvResult = findViewById(R.id.tvResult);
+        // 设置搜索按钮点击监听
+        btnSearch.setOnClickListener(v -> {
+            if (citySpinner.getSelectedItem() != null) {
+                fetchCityData(
+                        countrySpinner.getSelectedItem().toString(),
+                        stateSpinner.getSelectedItem().toString(),
+                        citySpinner.getSelectedItem().toString()
+                );
+            }
+        });
 
         // Inizializzazione UI
         countrySpinner = findViewById(R.id.countrySpinner);
@@ -53,6 +71,60 @@ public class AirQualityActivity extends AppCompatActivity {
 
         setupSpinners();
         loadCountries();
+
+    }
+
+    // 新增：获取城市详细数据
+    private void fetchCityData(String country, String state, String city) {
+        String url = null;
+        try {
+            url = BASE_URL + "city?city=" + URLEncoder.encode(city, "UTF-8")
+                    + "&state=" + URLEncoder.encode(state, "UTF-8")
+                    + "&country=" + URLEncoder.encode(country, "UTF-8")
+                    + "&key=" + API_KEY;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONObject data = response.getJSONObject("data");
+                        JSONObject current = data.getJSONObject("current");
+
+                        // 解析污染数据
+                        JSONObject pollution = current.getJSONObject("pollution");
+                        String aqi = pollution.getString("aqius");
+                        String mainPollutant = pollution.getString("mainus");
+
+                        // 解析天气数据
+                        JSONObject weather = current.getJSONObject("weather");
+                        String temp = weather.getString("tp") + "°C";
+                        String pressure = weather.getString("pr") + " hPa";
+                        String humidity = weather.getString("hu") + "%";
+
+                        // 显示结果
+                        String resultText = String.format(
+                                "城市: %s\nAQI: %s\n主要污染物: %s\n\n温度: %s\n气压: %s\n湿度: %s",
+                                city, aqi, mainPollutant, temp, pressure, humidity
+                        );
+
+                        tvResult.setText(resultText);
+                        tvResult.setVisibility(View.VISIBLE);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "数据解析错误", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(this, "获取数据失败", Toast.LENGTH_SHORT).show();
+                    tvResult.setVisibility(View.GONE);
+                });
+
+        requestQueue.add(request);
     }
 
     private void setupSpinners() {
@@ -172,8 +244,8 @@ public class AirQualityActivity extends AppCompatActivity {
     }
 
     private void loadCities(String country, String state) throws UnsupportedEncodingException {
-        String url = BASE_URL + "cities?state=" + URLEncoder.encode(state, "UTF-8")
-                + "&country=" + URLEncoder.encode(country, "UTF-8")
+        String url = BASE_URL + "cities?state=" + URLEncoder.encode(state)
+                + "&country=" + URLEncoder.encode(country)
                 + "&key=" + API_KEY;
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET, url, null,
@@ -186,6 +258,7 @@ public class AirQualityActivity extends AppCompatActivity {
                             cityAdapter.add(city.getString("city"));
                         }
                         citySpinner.setEnabled(!cityAdapter.isEmpty());
+                        btnSearch.setEnabled(cityAdapter.getCount() > 0);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         citySpinner.setEnabled(false);
@@ -196,5 +269,6 @@ public class AirQualityActivity extends AppCompatActivity {
                     citySpinner.setEnabled(false);
                 });
         requestQueue.add(request);
+
     }
 }

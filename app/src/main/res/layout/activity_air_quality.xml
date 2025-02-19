@@ -8,7 +8,6 @@
     android:gravity="center">
 
     <!-- EditText per inserire il nome della città manualmente-->
-
     <EditText
         android:id="@+id/cityEditText"
         android:layout_width="match_parent"
@@ -50,74 +49,22 @@
         android:text="Usa la mia posizione"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Pulsante per cercare la qualità dell'aria -->
+    <!-- Pulsante per cercare -->
     <Button
-        android:id="@+id/searchButton"
+        android:id="@+id/btnSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerca Qualità dell'Aria"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- TextView per mostrare il nome della città -->
-    <TextView
-        android:id="@+id/cityTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Città: -"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
+        android:text="Cerca"
+        android:enabled="false"
         android:layout_marginBottom="8dp"/>
 
-    <!-- TextView per mostrare l'AQI -->
+    <!-- TextView per mostrare il risultato -->
     <TextView
-        android:id="@+id/aqiTextView"
+        android:id="@+id/tvResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AQI: -"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:visibility="gone"
         android:layout_marginBottom="8dp"/>
-
-    <!-- TextView per mostrare l'inquinante principale -->
-    <TextView
-        android:id="@+id/pollutionTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Inquinante principale: -"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
-
-    <!-- TextView per mostrare la temperatura -->
-    <TextView
-        android:id="@+id/temperatureTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Temperatura: -"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
-
-    <!-- TextView per mostrare la pressione -->
-    <TextView
-        android:id="@+id/pressureTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pressione: -"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
-
-    <!-- TextView per mostrare l'umidità -->
-    <TextView
-        android:id="@+id/humidityTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Umidità: -"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
-
 </LinearLayout>
