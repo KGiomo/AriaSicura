@@ -32,16 +32,10 @@ public class AirQualityActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "https://api.airvisual.com/v2/";
 
-    private EditText cityEditText;
     private Spinner countrySpinner, stateSpinner, citySpinner;
     private boolean isInitialCountryLoad = true; // 新增标志位
     private ArrayAdapter<String> countryAdapter, stateAdapter, cityAdapter;
-    private TextView cityTextView, aqiTextView, pollutionTextView, temperatureTextView, pressureTextView, humidityTextView, meteoTextView;
-    private Button searchButton, locationButton;
     private RequestQueue requestQueue;
-
-    private FusedLocationProviderClient fusedLocationClient;
-
     private static final String API_KEY = BuildConfig.AIRVISUAL_API_KEY;
 
 
@@ -51,26 +45,13 @@ public class AirQualityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_air_quality);
 
         // Inizializzazione UI
-        cityEditText = findViewById(R.id.cityEditText);
         countrySpinner = findViewById(R.id.countrySpinner);
         stateSpinner = findViewById(R.id.stateSpinner);
         citySpinner = findViewById(R.id.citySpinner);
-        cityTextView = findViewById(R.id.cityTextView);
-        aqiTextView = findViewById(R.id.aqiTextView);
-        pollutionTextView = findViewById(R.id.pollutionTextView);
-        searchButton = findViewById(R.id.searchButton);
-        locationButton = findViewById(R.id.locationButton);
-        temperatureTextView = findViewById(R.id.temperatureTextView);
-        pressureTextView = findViewById(R.id.pressureTextView);
-        humidityTextView = findViewById(R.id.humidityTextView);
+
 
         // Inizializzazione Volley
         requestQueue = Volley.newRequestQueue(this);
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        // Caricamento della lista dei paesi
-        loadCountries();
-
         countryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         stateAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         cityAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
