@@ -34,7 +34,6 @@
         <!--attività -->
         <activity android:name=".AirQualityActivity" />
         <activity android:name=".TipsActivity" />
-        <activity android:name=".WidgetActivity" />
     </application>
 
 
