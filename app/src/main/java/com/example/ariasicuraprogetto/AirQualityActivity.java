@@ -18,12 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
-import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import android.location.Location;
 
 import com.android.volley.Request;
@@ -64,12 +60,12 @@ public class AirQualityActivity extends AppCompatActivity {
         Button locationButton = findViewById(R.id.locationButton);
         locationButton.setOnClickListener(v -> getLocation());
 
-        // 初始化新控件
+        // Recupero le componenti
         btnSearch = findViewById(R.id.btnSearch);
         tvResult = findViewById(R.id.tvResult);
 
 
-        // 设置搜索按钮点击监听
+        // Configuro il click del bottone
         btnSearch.setOnClickListener(v -> {
             if (citySpinner.getSelectedItem() != null) {
                 fetchCityData(
@@ -118,7 +114,7 @@ public class AirQualityActivity extends AppCompatActivity {
     }
 
     private void fetchCityDataFromCoordinates(double latitude, double longitude) {
-        // Prende i dati della stazione più vicina
+        // Prendo i dati della stazione più vicina
         String url = BASE_URL + "nearest_city?lat=" + latitude + "&lon=" + longitude + "&key=" + API_KEY;
 
         JsonObjectRequest request = new JsonObjectRequest(
@@ -174,7 +170,7 @@ public class AirQualityActivity extends AppCompatActivity {
     }
 
 
-    // 新增：获取城市详细数据
+    // Ottengo i dati aggiornati sulla città
     private void fetchCityData(String country, String state, String city) {
         String url = null;
         try {
@@ -193,24 +189,21 @@ public class AirQualityActivity extends AppCompatActivity {
                     try {
                         JSONObject data = response.getJSONObject("data");
                         JSONObject current = data.getJSONObject("current");
-
-                        // 解析污染数据
                         JSONObject pollution = current.getJSONObject("pollution");
                         String aqi = pollution.getString("aqius");
                         String mainPollutant = pollution.getString("mainus");
-
-                        // 解析天气数据
                         JSONObject weather = current.getJSONObject("weather");
                         String temp = weather.getString("tp") + "°C";
                         String pressure = weather.getString("pr") + " hPa";
                         String humidity = weather.getString("hu") + "%";
 
-                        // 显示结果
+                        // Stringa che contiene i dati ottenuti dalla richiesta
                         String resultText = String.format(
                                 "Città: %s\nAQI: %s\nInquinanti principali: %s\n\nTemperatura: %s\nPressione: %s\nUmidità: %s",
                                 city, aqi, mainPollutant, temp, pressure, humidity
                         );
 
+                        // Mostro a schermo i risultati
                         tvResult.setText(resultText);
                         tvResult.setVisibility(View.VISIBLE);
 
