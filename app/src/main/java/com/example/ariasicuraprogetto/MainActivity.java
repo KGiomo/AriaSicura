@@ -24,6 +24,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Metodo per aprire l'Activity MapActivity
+    public void openMapActivity(View view) {
+        Log.d(TAG, "Opening MapActivity");
+        Intent intent = new Intent(MainActivity.this, MapActivity.class);
+        startActivity(intent);
+    }
+
     // Metodo per aprire l'Activity TipsActivity
     public void openTipsActivity(View view) {
         Log.d(TAG, "Opening TipsActivity");
