@@ -36,6 +36,4 @@
         <activity android:name=".TipsActivity" />
         <activity android:name=".MapActivity" />
     </application>
-
-
 </manifest>
