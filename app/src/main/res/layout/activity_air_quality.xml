@@ -8,14 +8,19 @@
     android:gravity="center">
 
     <!-- EditText per inserire il nome della città manualmente-->
-    <EditText
+    <TextView
         android:id="@+id/cityEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:hint="Inserisci il nome della città"
-        android:inputType="text"
-        android:minHeight="48dp" />
+        android:hint="Seleziona la città per cui recuperare i dati:"
+        android:minHeight="48dp"
+        android:textSize="21dp"
+        android:textStyle="bold"
+        android:textColor="#E2DFD2"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"/>
+
 
     <!-- Spinner per selezionare la nazione -->
     <Spinner
