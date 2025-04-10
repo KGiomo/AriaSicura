@@ -69,4 +69,21 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Programmazione di rete, chiamata API per ottenere dati di rete
+
+    // analisi dei dati
+    implementation("com.google.code.gson:gson:2.8.9")
+    // caricamento delle immagini
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    // richiesta di rete
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    // Lombok
+    compileOnly ("org.projectlombok:lombok:1.18.30")
+    annotationProcessor ("org.projectlombok:lombok:1.18.30")
+    // Jackson
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.0")
+
+    // -------------------------------------------------------------
 }
