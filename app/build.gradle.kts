@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -37,6 +38,9 @@ android {
 
     // Configurazione per la chiave API
     val localProperties = rootProject.file("local.properties")
+    kotlinOptions {
+        jvmTarget = "11"
+    }
     if (localProperties.exists()) {
         val properties = mutableMapOf<String, String>()
         localProperties.inputStream().use { inputStream ->
@@ -66,6 +70,7 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.constraintlayout)
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

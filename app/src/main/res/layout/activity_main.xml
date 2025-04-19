@@ -146,10 +146,10 @@
 
         <!-- Box AQI -->
         <LinearLayout
+            android:id="@+id/boxAQI"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#AEEA00"
             android:padding="16dp"
             android:layout_marginHorizontal="8dp"
             android:layout_marginBottom="24dp"
@@ -215,14 +215,13 @@
                     android:id="@+id/pollutionStateText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Good"
                     android:textSize="@dimen/secondText_size"
                     android:textStyle="bold"
                     android:textColor="#2E7D32"
                     android:layout_marginBottom="4dp">
                 </TextView>
 
-                <!-- NO₂ -->
+                <!-- NO₂
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -261,6 +260,8 @@
                     </TextView>
 
                 </LinearLayout>
+
+                -->
 
             </LinearLayout>
 
@@ -348,7 +349,9 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp">
+            android:padding="8dp"
+
+            android:onClick="openMapActivity">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
@@ -376,7 +379,9 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp">
+            android:padding="8dp"
+
+            android:onClick="openTipsActivity">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"

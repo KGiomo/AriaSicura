@@ -52,71 +52,29 @@ public class PollutionInfo {
                 @SerializedName("aqius")
                 private int aqius;
 
-                @SerializedName("mainus")
-                private String mainus;
-
                 @SerializedName("ts")
                 private String ts;
 
-                @SerializedName("p1")
-                private PollutantDetail p1;
-
-                @SerializedName("p2")
-                private PollutantDetail p2;
-
-                @SerializedName("o3")
-                private PollutantDetail o3;
-
-                @SerializedName("n2")  // <-- NO₂
-                private PollutantDetail n2;
-
-                @SerializedName("s2")
-                private PollutantDetail s2;
-
-                @SerializedName("co")
-                private PollutantDetail co;
+                @SerializedName("n2")
+                private N2DTO n2;
 
                 public int getAqius() {
                     return aqius;
-                }
-
-                public String getMainus() {
-                    return mainus;
                 }
 
                 public String getTs() {
                     return ts;
                 }
 
-                public PollutantDetail getP1() {
-                    return p1;
-                }
-
-                public PollutantDetail getP2() {
-                    return p2;
-                }
-
-                public PollutantDetail getO3() {
-                    return o3;
-                }
-
-                public PollutantDetail getN2() {
+                public N2DTO getN2() {
                     return n2;
                 }
 
-                public PollutantDetail getS2() {
-                    return s2;
-                }
-
-                public PollutantDetail getCo() {
-                    return co;
-                }
-
-                public static class PollutantDetail {
+                public static class N2DTO {
                     @SerializedName("conc")
-                    private Double conc;
+                    private int conc;
 
-                    public Double getConc() {
+                    public int getConc(){
                         return conc;
                     }
                 }
