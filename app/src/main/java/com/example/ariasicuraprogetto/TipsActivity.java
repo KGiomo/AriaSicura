@@ -12,12 +12,18 @@ public class TipsActivity extends AppCompatActivity {
 
         // Trova il TextView nel layout
         TextView textView = findViewById(R.id.textView);
+        StringBuilder tipsText = new StringBuilder();
 
-        // Cambia il testo del TextView
-        textView.setText("Il numero AQI viene assegnato in base all'inquinante atmosferico con il numero AQI più alto al momento della misurazione della qualità dell'aria. Vengono misurati solo gli inquinanti disponibili in una determinata stazione di monitoraggio della qualità dell'aria e molte di esse non includono tutti e sei gli inquinanti in egual misura. Poiché la qualità dell'aria cambia nel corso della giornata, l'AQI di una località monitorata varia in base al livello delle concentrazioni di inquinanti atmosferici misurati.\n" +
-                "\n" +
-                "L'indice rappresenta le concentrazioni di inquinanti atmosferici con un numero che rientra in un intervallo di categorie di qualità dell'aria. All'interno di ogni categoria e intervallo di numeri, vengono identificati i rischi elevati per la salute associati all'aumento delle concentrazioni di inquinanti atmosferici.\n" +
-                "\n" +
-                "L'indice di qualità dell'aria va da 0 a 500, anche se la qualità dell'aria può essere indicizzata oltre 500 quando ci sono livelli più elevati di inquinamento atmosferico pericoloso. Una buona qualità dell'aria va da 0 a 50, mentre le misurazioni superiori a 300 sono considerate pericolose.");
+        //What if we need to add more tips later on? Make it more generic
+        for(int i = 1; i <= 14; i++)
+        {
+            String tipName= "tip" + i;
+            int resId = getResources().getIdentifier(tipName, "string", getPackageName());
+
+            if (resId != 0) {
+                tipsText.append(getString(resId)).append("\n\n");
+            }
+        }
+        textView.setText(tipsText.toString());
     }
 }
