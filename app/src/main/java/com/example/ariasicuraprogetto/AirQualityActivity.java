@@ -199,7 +199,7 @@ public class AirQualityActivity extends AppCompatActivity {
 
                         // Stringa che contiene i dati ottenuti dalla richiesta
                         String resultText = String.format(
-                                "Città: %s\nAQI: %s\nInquinanti principale: %s\n\nTemperatura: %s\nPressione: %s\nUmidità: %s",
+                                "Città: %s\nAQI: %s\nInquinanti principali: %s\n\nTemperatura: %s\nPressione: %s\nUmidità: %s",
                                 city, aqi, mainPollutant, temp, pressure, humidity
                         );
 
