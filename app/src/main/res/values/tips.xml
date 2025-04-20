@@ -1,0 +1,197 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="tip1" tools:ignore="Typos"><![CDATA[
+L\'indice AQI (Air Quality Index) viene assegnato in base all\'inquinante atmosferico con il numero AQI più alto al momento della misurazione della qualità dell\'aria.
+Vengono misurati solo gli inquinanti misurabili in una determinata stazione di monitoraggio, e molte di esse non includono tutti gli inquinanti nei loro calcoli.
+Poiché la qualità dell\'aria cambia nel corso della giornata, l\'AQI viene ottenuto dalla media tra gli intervalli di misurazione.
+    ]]></string>
+
+    <string name="tip2"><![CDATA[
+L\'AQI viene rappresentato da un numero che rientra in una certa categoria.
+All\'interno di queste vengono identificati la nocività dell\'aria e i rischi associati all\'aumento degli inquinanti atmosferici.
+    ]]></string>
+
+    <!--
+    <string name="valori">Valori</string>
+    <string name="categoria">Categoria</string>
+    <string name="effetti_sulla_salute">Effetti sulla salute</string>-->
+    <!-- Prima riga -->
+    <!--
+    <string name="tip1_values">0–50</string>
+    <string name="tip1_category">Buono</string>
+    <string name="tip1_health_effects">Nessun pericolo</string> -->
+    <!-- Seconda riga -->
+    <!--
+    <string name="tip2_values">51–100</string>
+    <string name="tip2_category">Moderato</string>
+    <string name="tip2_health_effects">Sensibili: limitare sforzi prolungati all\'aperto</string> -->
+    <!-- Terza riga -->
+    <!--
+    <string name="tip3_values">101–150</string>
+    <string name="tip3_category">Attenzione</string>
+    <string name="tip3_health_effects">Sensibili: cautela durante sforzi intensi</string> -->
+    <!-- Quarta riga -->
+    <!--
+    <string name="tip4_values">151–200</string>
+    <string name="tip4_category">Insalubre</string>
+    <string name="tip4_health_effects">Sensibili: attività al chiuso consigliate</string> -->
+    <!-- Quinta riga -->
+    <!--
+    <string name="tip5_values">201–300</string>
+    <string name="tip5_category">Molto Insalubre</string>
+    <string name="tip5_health_effects">Preferire attività al chiuso</string> -->
+    <!-- Sesta riga -->
+    <!--
+    <string name="tip6_values">301+</string>
+    <string name="tip6_category">Nociva</string>
+    <string name="tip6_health_effects">Limitare attività fisica, stare al chiuso</string> -->
+    <string name="tip3"><![CDATA[
+Le categorie dell\'US AQI secondo l\'EPA:
+
+Valori     | Categoria         | Effetti sulla salute
+
+0-50       | Buono             | Nessun pericolo
+51-100     | Moderato          | Sensibili: limitare sforzi prolungati all\'aperto
+101-150    | Attenzione        | Sensibili: cautela durante sforzi intensi
+151-200    | Insalubre         | Sensibili: attività al chiuso consigliate
+201-300    | Molto Insalubre   | Preferire attività al chiuso
+301+       | Nociva            | Limitare attività fisica, stare al chiuso
+    ]]></string>
+
+    <string name="tip4"><![CDATA[
+L\'inquinamento atmosferico ha origini sia umane sia naturali.
+
+Fonti naturali:
+• Polvere
+• Terra
+• Sabbia
+• Fumo vulcanico
+• Materiali in fiamme
+
+Fonti umane:
+• Trasporto
+• Industria
+• Agricoltura
+• Uso di biomassa
+    ]]></string>
+
+    <string name="tip5"><![CDATA[
+Industria:
+Aziende manifatturiere, miniere, raffinerie e la produzione di calore ed energia.
+Producono:
+• Ossidi di azoto (NOx)
+• Idrogeno solforato
+• Composti organici volatili (COV)
+• Particolato
+    ]]></string>
+
+    <string name="tip6"><![CDATA[
+Agricoltura:
+L\'alto uso di fertilizzanti e gli allevamenti intensivi causano alta concentrazione di:
+• Particolati fini (PM2.5)
+• Metano
+
+È la fonte principale di inquinamento in Europa, Stati Uniti, Cina e Russia.
+    ]]></string>
+
+    <string name="tip7"><![CDATA[
+Trasporto:
+L\'uso di motori a combustibile fossile causa:
+• Particolato fine (PM2.5)
+• Ozono (O3)
+• Diossido di azoto (NO2)
+
+Nota: Esiste una correlazione tra emissioni e reddito — all\'aumentare del tenore di vita, cresce la domanda di trasporti.
+    ]]></string>
+
+    <string name="tip8"><![CDATA[
+Case:
+• Riscaldamento e cottura con carbone o legna producono emissioni
+• L’edilizia e il cemento rilasciano CO2
+    ]]></string>
+
+    <string name="tip9"><![CDATA[
+Fonti naturali:
+• Eruzioni vulcaniche
+• Incendi boschivi
+• Polvere e tempeste di sabbia
+
+Possono generare:
+• PM (materia particolata)
+• NOx (ossidi di azoto)
+• SO2 (diossido di zolfo)
+• Piombo e mercurio
+
+Possono avere impatti massicci a seconda della geografia locale.
+    ]]></string>
+
+    <string name="tip10"><![CDATA[
+L’inquinamento atmosferico causa ogni anno la morte prematura di 7 milioni di persone.
+
+È associato a:
+• Cancro polmonare
+• Infezioni respiratorie acute
+• Ictus
+• Coronaropatia
+• Altre malattie respiratorie e cardiovascolari
+    ]]></string>
+
+    <string name="tip11"><![CDATA[
+I gruppi più vulnerabili agli effetti dell’inquinamento atmosferico:
+• Persone con malattie cardiovascolari o polmonari
+• Anziani
+• Bambini sotto i 14 anni
+• Donne incinte
+• Lavoratori all\'aperto
+• Atleti
+    ]]></string>
+
+    <string name="tip12" tools:ignore="Typos"><![CDATA[
+Le maschere aiutano a ridurre l’esposizione all’inquinamento.
+
+Efficacia:
+• Mascherine chirurgiche: riducono esposizione del 60-80%
+• Maschere FFP1-2-3: riduzione dell’80-99%
+
+Nota: Le maschere specifiche per inquinamento atmosferico sono più efficaci ma più costose.
+    ]]></string>
+
+    <string name="tip13" tools:ignore="Typos"><![CDATA[
+Azioni personali per ridurre l\'inquinamento:
+
+• Evitare veicoli a motore quando possibile
+• Camminare o usare la bicicletta
+• Preferire mezzi pubblici a privati
+• Usare veicoli elettrici o ibridi
+• Servizi di car sharing e car pooling
+• Evitare di bruciare legna o carbone
+• Limitare carne rossa e affettati a 2 volte a settimana
+• Preferire carni bianche e pesce
+• Acquistare prodotti a Km 0
+    ]]></string>
+
+    <string name="tip14"><![CDATA[
+L’inquinamento atmosferico è presente anche negli ambienti interni.
+
+Buone pratiche:
+• Arieggiare gli spazi se l’aria esterna è buona
+• Controllare fonti interne (camini, fornelli, ecc.)
+• Usare elettrodomestici ad alta efficienza
+• Attivare modalità riciclo dell’aria nei condizionatori
+• Usare filtri HVAC o purificatori
+• Lavare animali e biancheria da letto regolarmente
+• Usare cuscini anallergici e materassi protettivi
+• Evitare muffa e sostituire materiali danneggiati
+• Limitare deodoranti e candele profumate
+• Non fumare, neanche all’esterno vicino a finestre
+• Tenere vernici e solventi fuori casa
+
+Se l’inquinamento è già alto:
+• Evitare attività fisiche intense
+• Usare maschere
+• Attivare i purificatori al massimo
+• In caso estremo, evacuare
+    ]]></string>
+
+
+</resources>
