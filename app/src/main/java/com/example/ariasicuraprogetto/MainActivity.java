@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -32,32 +30,15 @@ import okhttp3.Response;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.widget.RemoteViews;
-import com.example.ariasicuraprogetto.widgetProvider;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity"; // Aggiungi una costante TAG per i log
+    private static final String TAG = "MainActivity";
 
-    // ----------------------------------
-
-    // Rete: Get specified city data
-    private static String url = "http://api.airvisual.com/v2/city?city=Venice&state=Veneto&country=Italy&key=ac6e45f6-571f-4a0a-86ca-52c9d2aba5be";
-    private TextView cityText;
-    private TextView stateText;
-    private TextView countryText;
-    private TextView aqiUsText;
-    private TextView lastUpdateTextView;
-
-    // private TextView no2ConcText;
-
-    // ------------------------------
-
+    private String url;
+    private TextView cityText, stateText, countryText, aqiUsText, lastUpdateTextView;
     private LinearLayout aqiBox;
     private TextView pollutionStateText;
-
-    // -----------------------------------
-
 
     private Handler handler = new Handler(Looper.myLooper()) {
         @Override
@@ -69,48 +50,49 @@ public class MainActivity extends AppCompatActivity {
                 if (pollutionInfo != null && pollutionInfo.getData() != null) {
                     PollutionInfo.DataDTO dataDTO = pollutionInfo.getData();
 
-                    cityText.setText(dataDTO.getCity());
-                    stateText.setText(dataDTO.getState());
-                    countryText.setText(dataDTO.getCountry());
+                    cityText.setText(dataDTO.getCity() != null ? dataDTO.getCity() : "N/A");
+                    stateText.setText(dataDTO.getState() != null ? dataDTO.getState() : "N/A");
+                    countryText.setText(dataDTO.getCountry() != null ? dataDTO.getCountry() : "N/A");
 
-                    // AQI
-                    PollutionInfo.DataDTO.CurrentDTO.PollutionDTO pollution = dataDTO.getCurrent().getPollution();
-                    aqiUsText.setText(String.valueOf(pollution.getAqius()));
+                    if (dataDTO.getCurrent() != null && dataDTO.getCurrent().getPollution() != null) {
+                        int aqi = dataDTO.getCurrent().getPollution().getAqius();
+                        aqiUsText.setText(String.valueOf(aqi));
 
-                    // NO2, questo informazione non riesco ad estrarlo quindi non lo metto, se volete metterlo allora fatte voi.
-                    // PollutionInfo.DataDTO.CurrentDTO.PollutionDTO.N2DTO pollutionDetail = dataDTO.getCurrent().getPollution().getN2();
-                    // aqiUsText.setText(String.valueOf(pollutionDetail.getConc()));
+                        try {
+                            SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            parser.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            Date date = parser.parse(dataDTO.getCurrent().getPollution().getTs());
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.ENGLISH);
+                            lastUpdateTextView.setText(formatter.format(date));
+                        } catch (ParseException e) {
+                            lastUpdateTextView.setText("N/A");
+                        }
 
-                    // Time
-                    try {
-                        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                        parser.setTimeZone(TimeZone.getTimeZone("UTC"));
-                        Date date = parser.parse(pollution.getTs());
-                        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.ENGLISH);
-                        lastUpdateTextView.setText(formatter.format(date));
-                    } catch (ParseException e) {
-                        lastUpdateTextView.setText("N/A");
+                        updateAQIVisuals(aqi, pollutionStateText, aqiBox);
+                    } else {
+                        aqiUsText.setText("N/A");
+                        lastUpdateTextView.setText("Dati non disponibili");
+                        pollutionStateText.setText("N/A");
                     }
-
-                    int aqi = pollution.getAqius();
-                    updateAQIVisuals(aqi, pollutionStateText, aqiBox);
-
-                    // ----------------------------
 
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
                     ComponentName thisWidget = new ComponentName(getApplicationContext(), widgetProvider.class);
                     int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-
                     for (int appWidgetId : appWidgetIds) {
                         widgetProvider.updateAppWidget(getApplicationContext(), appWidgetManager, appWidgetId, dataDTO);
                     }
 
+                } else {
+                    cityText.setText("N/A");
+                    stateText.setText("N/A");
+                    countryText.setText("N/A");
+                    aqiUsText.setText("N/A");
+                    lastUpdateTextView.setText("N/A");
+                    pollutionStateText.setText("N/A");
                 }
             }
         }
     };
-
-    // --------------------------------
 
     private void updateAQIVisuals(int aqi, TextView pollutionStateText, LinearLayout aqiBox) {
         if (aqi <= 50) {
@@ -128,42 +110,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // -----------------------------------------
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, " Opening MainActivity");
-
-        // ---------------------------
+        Log.d(TAG, "Opening MainActivity");
 
         cityText = findViewById(R.id.city);
         stateText = findViewById(R.id.state);
         countryText = findViewById(R.id.country);
         aqiUsText = findViewById(R.id.aqi_us);
-        // no2ConcText = findViewById(R.id.no2_conc);
         lastUpdateTextView = findViewById(R.id.lastUpdate);
-
         aqiBox = findViewById(R.id.boxAQI);
         pollutionStateText = findViewById(R.id.pollutionStateText);
 
-        // -----------------------------------
+        // Usa l'URL passato da AirQualityActivity, se disponibile
+        Intent intent = getIntent();
+        if (intent.hasExtra("url")) {
+            url = intent.getStringExtra("url");
+            Log.d(TAG, "URL ricevuto da AirQualityActivity: " + url);
+        }
 
-        getHttpData(); // ottenere info da rete
+        getHttpData(); // Effettua richiesta HTTP
     }
 
-    private void getHttpData(){
+    private void getHttpData() {
         OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
+        Request request = new Request.Builder().url(url).get().build();
+
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("-------", "onFailure: " + e.toString());
+                Log.d(TAG, "onFailure: " + e.toString());
             }
 
             @Override
@@ -177,22 +156,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Metodo per aprire l'Activity AirQualityActivity
     public void openAirQualityActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AirQualityActivity.class);
         startActivity(intent);
     }
 
-    // Metodo per aprire l'Activity MapActivity
     public void openMapActivity(View view) {
         Intent intent = new Intent(MainActivity.this, MapActivity.class);
         startActivity(intent);
     }
 
-    // Metodo per aprire l'Activity TipsActivity
     public void openTipsActivity(View view) {
         Intent intent = new Intent(MainActivity.this, TipsActivity.class);
         startActivity(intent);
     }
-
 }

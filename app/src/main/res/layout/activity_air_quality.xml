@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:hint="Seleziona la città per cui recuperare i dati:"
+        android:hint="Seleziona la città per recuperare i dati:"
         android:minHeight="48dp"
         android:textSize="21dp"
         android:textStyle="bold"
@@ -71,5 +71,6 @@
         android:padding="16dp"
         android:textSize="16sp"
         android:visibility="gone"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp" />
+
 </LinearLayout>
