@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp">
+        android:paddingEnd="8dp"
+        android:gravity="center">
 
         <!-- logo -->
         <ImageView
@@ -23,14 +24,9 @@
             android:layout_height="@dimen/icon_size"
             android:layout_gravity="center_vertical"
             android:src="@drawable/images"
-            android:scaleType="fitXY">
+            android:scaleType="fitXY"
+            android:layout_marginEnd="8dp">
         </ImageView>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.5">
-        </Space>
 
         <!-- Title -->
         <TextView
@@ -42,43 +38,6 @@
             android:textColor="#4285F4"
             android:gravity="center">
         </TextView>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.5">
-        </Space>
-
-        <!-- Search -->
-        <ImageButton
-            android:id="@+id/btnSearch"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@drawable/images"
-            android:background="@android:color/transparent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="4dp"
-            android:scaleType="fitXY"
-            android:contentDescription="Search">
-        </ImageButton>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.5">
-        </Space>
-
-        <!-- Notification -->
-        <ImageButton
-            android:id="@+id/btnNotification"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@drawable/images"
-            android:background="@android:color/transparent"
-            android:layout_marginStart="4dp"
-            android:scaleType="fitXY"
-            android:contentDescription="Notification">
-        </ImageButton>
 
     </LinearLayout>
 
@@ -100,7 +59,8 @@
             android:id="@+id/tipsContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
         </LinearLayout>
 
     </ScrollView>

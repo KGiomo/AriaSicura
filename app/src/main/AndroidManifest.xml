@@ -23,7 +23,7 @@
         android:theme="@style/Theme.AriaSicuraProgetto"
         tools:targetApi="31">
 
-        <!-- ⚠️ LANCIARE QUESTA ACTIVITY ALL'AVVIO -->
+        <!-- LANCIARE QUESTA ACTIVITY ALL'AVVIO -->
         <activity
             android:name=".AirQualityActivity"
             android:exported="true">

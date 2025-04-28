@@ -124,14 +124,13 @@ public class MainActivity extends AppCompatActivity {
         aqiBox = findViewById(R.id.boxAQI);
         pollutionStateText = findViewById(R.id.pollutionStateText);
 
-        // Usa l'URL passato da AirQualityActivity, se disponibile
         Intent intent = getIntent();
         if (intent.hasExtra("url")) {
             url = intent.getStringExtra("url");
             Log.d(TAG, "URL ricevuto da AirQualityActivity: " + url);
         }
 
-        getHttpData(); // Effettua richiesta HTTP
+        getHttpData();
     }
 
     private void getHttpData() {
@@ -168,6 +167,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void openTipsActivity(View view) {
         Intent intent = new Intent(MainActivity.this, TipsActivity.class);
+        String aqiString = aqiUsText.getText().toString();
+        try {
+            int aqi = Integer.parseInt(aqiString);
+            intent.putExtra("aqi_value", aqi);
+        } catch (NumberFormatException e) {
+            intent.putExtra("aqi_value", -1);
+        }
         startActivity(intent);
     }
 }
