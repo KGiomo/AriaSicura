@@ -1,6 +1,13 @@
 package com.example.ariasicuraprogetto;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import com.google.gson.Gson;
 
@@ -34,12 +42,10 @@ import android.content.ComponentName;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-
     private String url;
     private TextView cityText, stateText, countryText, aqiUsText, lastUpdateTextView;
     private LinearLayout aqiBox;
     private TextView pollutionStateText;
-
     private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -57,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
                     if (dataDTO.getCurrent() != null && dataDTO.getCurrent().getPollution() != null) {
                         int aqi = dataDTO.getCurrent().getPollution().getAqius();
                         aqiUsText.setText(String.valueOf(aqi));
+
+                        // 🔥 SALVA AQI REALE per NotificationReceiver
+                        SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
+                        editor.putInt("last_aqi", aqi);
+                        editor.apply();
 
                         try {
                             SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -93,22 +104,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
-    private void updateAQIVisuals(int aqi, TextView pollutionStateText, LinearLayout aqiBox) {
-        if (aqi <= 50) {
-            pollutionStateText.setText("Good");
-            pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-        } else if (aqi <= 100) {
-            pollutionStateText.setText("Moderate");
-            pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
-            aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
-        } else {
-            pollutionStateText.setText("Unhealthy");
-            pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
-        }
-    }
+    private NotificationManager manager;
+    private Notification notification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +128,59 @@ public class MainActivity extends AppCompatActivity {
         }
 
         getHttpData();
+
+        // Notification setup
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("leo", "Notification", NotificationManager.IMPORTANCE_HIGH);
+            manager.createNotificationChannel(channel);
+        }
+        notification = new NotificationCompat.Builder(this, "leo").build();
+
+        // Permission + Ask for daily notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+        }
+
+        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        boolean notificationsEnabled = prefs.getBoolean("notifications_enabled", false);
+
+        if (!notificationsEnabled) {
+            askNotificationPermission();
+        }
+
+        // Mostra notifica subito all'avvio (test)
+        sendBroadcast(new Intent(this, NotificationReceiver.class));
+    }
+
+    private void askNotificationPermission() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Receive notifications")
+                .setMessage("Would you like to receive a daily notification from ECO-DIGIFY?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
+                    editor.putBoolean("notifications_enabled", true);
+                    editor.apply();
+                    scheduleDailyNotification();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
+                    editor.putBoolean("notifications_enabled", false);
+                    editor.apply();
+                })
+                .show();
+    }
+
+    private void scheduleDailyNotification() {
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        long interval = AlarmManager.INTERVAL_DAY;
+        long triggerTime = System.currentTimeMillis() + interval;
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, triggerTime, interval, pendingIntent);
     }
 
     private void getHttpData() {
@@ -175,5 +225,21 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("aqi_value", -1);
         }
         startActivity(intent);
+    }
+
+    private void updateAQIVisuals(int aqi, TextView pollutionStateText, LinearLayout aqiBox) {
+        if (aqi <= 50) {
+            pollutionStateText.setText("Good");
+            pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+        } else if (aqi <= 100) {
+            pollutionStateText.setText("Moderate");
+            pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
+            aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
+        } else {
+            pollutionStateText.setText("Unhealthy");
+            pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+        }
     }
 }
