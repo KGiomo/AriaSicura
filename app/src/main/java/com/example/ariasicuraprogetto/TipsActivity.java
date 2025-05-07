@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,17 +28,24 @@ public class TipsActivity extends AppCompatActivity {
         List<Tips> listTips = getConsigliPerAQI(aqi);
 
         for (Tips tip : listTips) {
+            ImageView imageView = new ImageView(this);
+            imageView.setImageResource(tip.getIcon());
+            imageView.setAdjustViewBounds(true);
+            imageView.setMaxHeight(150); // puoi regolare altezza/larghezza a piacere
+            imageView.setPadding(0, 16, 0, 8);
+
             TextView titleView = new TextView(this);
             titleView.setText(tip.getTitle());
             titleView.setTextSize(18);
             titleView.setTypeface(null, Typeface.BOLD);
-            titleView.setPadding(0, 12, 0, 4);
+            titleView.setPadding(0, 8, 0, 4);
 
             TextView descView = new TextView(this);
             descView.setText(tip.getText());
             descView.setTextSize(16);
             descView.setPadding(0, 0, 0, 16);
 
+            tipsLayout.addView(imageView);
             tipsLayout.addView(titleView);
             tipsLayout.addView(descView);
         }
@@ -59,21 +67,21 @@ public class TipsActivity extends AppCompatActivity {
         List<Tips> tips = new ArrayList<>();
 
         if (aqi <= 50) {
-            tips.add(new Tips("Outdoor Activities", "You can carry out outdoor activities without concern.", R.drawable.images));
-            tips.add(new Tips("Sports and Walks", "A great time for sports or walks.", R.drawable.images));
-            tips.add(new Tips("Ventilate Indoors", "Take the opportunity to ventilate your home or office.", R.drawable.images));
-            tips.add(new Tips("Air Quality", "No precautions necessary.", R.drawable.images));
+            tips.add(new Tips("Outdoor Activities", "You can carry out outdoor activities without concern.", R.drawable.outdoor));
+            tips.add(new Tips("Sports and Walks", "A great time for sports or walks.", R.drawable.walks));
+            tips.add(new Tips("Ventilate Indoors", "Take the opportunity to ventilate your home or office.", R.drawable.ventilate));
+            tips.add(new Tips("Air Quality", "No precautions necessary.", R.drawable.air));
         } else if (aqi <= 100) {
-            tips.add(new Tips("Sensitive Individuals", "If you have asthma or respiratory issues, consider limiting outdoor activity.", R.drawable.images));
-            tips.add(new Tips("Avoid Traffic", "Avoid traffic-heavy areas during peak hours.", R.drawable.images));
-            tips.add(new Tips("Moderate Activity", "Better to avoid prolonged physical effort outdoors.", R.drawable.images));
-            tips.add(new Tips("Monitor the Air", "Monitor the air quality in case it worsens later.", R.drawable.images));
+            tips.add(new Tips("Sensitive Individuals", "If you have asthma or respiratory issues, consider limiting outdoor activity.", R.drawable.sensitive));
+            tips.add(new Tips("Avoid Traffic", "Avoid traffic-heavy areas during peak hours.", R.drawable.traffic));
+            tips.add(new Tips("Moderate Activity", "Better to avoid prolonged physical effort outdoors.", R.drawable.activity));
+            tips.add(new Tips("Monitor the Air", "Monitor the air quality in case it worsens later.", R.drawable.monitor));
         } else {
-            tips.add(new Tips("Reduce Outdoor Time", "Especially if doing physical activity.", R.drawable.images));
-            tips.add(new Tips("Stay Indoors", "Keep windows closed and use air filters if available.", R.drawable.images));
-            tips.add(new Tips("Avoid Polluted Areas", "Avoid areas with heavy traffic or industrial zones.", R.drawable.images));
-            tips.add(new Tips("Protect Vulnerable Groups", "Children, elderly, and people with conditions should stay indoors.", R.drawable.images));
-            tips.add(new Tips("Be Prepared", "Keep medications handy if you have respiratory issues.", R.drawable.images));
+            tips.add(new Tips("Reduce Outdoor Time", "Especially if doing physical activity.", R.drawable.time));
+            tips.add(new Tips("Stay Indoors", "Keep windows closed and use air filters if available.", R.drawable.indoors));
+            tips.add(new Tips("Avoid Polluted Areas", "Avoid areas with heavy traffic or industrial zones.", R.drawable.polluted));
+            tips.add(new Tips("Protect Vulnerable Groups", "Children, elderly, and people with conditions should stay indoors.", R.drawable.vulnerable));
+            tips.add(new Tips("Be Prepared", "Keep medications handy if you have respiratory issues.", R.drawable.prepared));
         }
 
         return tips;

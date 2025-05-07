@@ -14,6 +14,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView cityText, stateText, countryText, aqiUsText, lastUpdateTextView;
     private LinearLayout aqiBox;
     private TextView pollutionStateText;
+    private ImageView pollutionStateImg;
+
     private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         int aqi = dataDTO.getCurrent().getPollution().getAqius();
                         aqiUsText.setText(String.valueOf(aqi));
 
-                        // 🔥 SALVA AQI REALE per NotificationReceiver
+                        // 🔥 Salva AQI per notifiche
                         SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
                         editor.putInt("last_aqi", aqi);
                         editor.apply();
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                             lastUpdateTextView.setText("N/A");
                         }
 
-                        updateAQIVisuals(aqi, pollutionStateText, aqiBox);
+                        updateAQIVisuals(aqi, pollutionStateText, aqiBox, pollutionStateImg);
                     } else {
                         aqiUsText.setText("N/A");
                         lastUpdateTextView.setText("Dati non disponibili");
@@ -104,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
     private NotificationManager manager;
     private Notification notification;
 
@@ -120,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         lastUpdateTextView = findViewById(R.id.lastUpdate);
         aqiBox = findViewById(R.id.boxAQI);
         pollutionStateText = findViewById(R.id.pollutionStateText);
+        pollutionStateImg = findViewById(R.id.pollutionStateImg); // 🟢 aggiunto per l'immagine
 
         Intent intent = getIntent();
         if (intent.hasExtra("url")) {
@@ -129,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
         getHttpData();
 
-        // Notification setup
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("leo", "Notification", NotificationManager.IMPORTANCE_HIGH);
@@ -137,19 +141,16 @@ public class MainActivity extends AppCompatActivity {
         }
         notification = new NotificationCompat.Builder(this, "leo").build();
 
-        // Permission + Ask for daily notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
 
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
         boolean notificationsEnabled = prefs.getBoolean("notifications_enabled", false);
-
         if (!notificationsEnabled) {
             askNotificationPermission();
         }
 
-        // Mostra notifica subito all'avvio (test)
         sendBroadcast(new Intent(this, NotificationReceiver.class));
     }
 
@@ -174,12 +175,10 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleDailyNotification() {
         Intent intent = new Intent(this, NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         long interval = AlarmManager.INTERVAL_DAY;
         long triggerTime = System.currentTimeMillis() + interval;
-
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, triggerTime, interval, pendingIntent);
     }
 
@@ -227,19 +226,22 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void updateAQIVisuals(int aqi, TextView pollutionStateText, LinearLayout aqiBox) {
+    private void updateAQIVisuals(int aqi, TextView pollutionStateText, LinearLayout aqiBox, ImageView pollutionStateImg) {
         if (aqi <= 50) {
             pollutionStateText.setText("Good");
             pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            pollutionStateImg.setImageResource(R.drawable.good);
         } else if (aqi <= 100) {
             pollutionStateText.setText("Moderate");
             pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
             aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
+            pollutionStateImg.setImageResource(R.drawable.moderate);
         } else {
             pollutionStateText.setText("Unhealthy");
             pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            pollutionStateImg.setImageResource(R.drawable.unhealthy);
         }
     }
 }

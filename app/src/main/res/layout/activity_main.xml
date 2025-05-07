@@ -22,7 +22,7 @@
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/images"
+            android:src="@mipmap/ic_launcher"
             android:scaleType="fitXY">
         </ImageView>
 
@@ -54,31 +54,13 @@
             android:id="@+id/btnSearch"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            android:src="@drawable/images"
+            android:src="@drawable/search"
             android:background="@android:color/transparent"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
             android:scaleType="fitXY"
             android:contentDescription="Search"
             android:onClick="openAirQualityActivity">
-        </ImageButton>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.5">
-        </Space>
-
-        <!-- Notification -->
-        <ImageButton
-            android:id="@+id/btnNotification"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@drawable/images"
-            android:background="@android:color/transparent"
-            android:layout_marginStart="4dp"
-            android:scaleType="fitXY"
-            android:contentDescription="Notification">
         </ImageButton>
 
     </LinearLayout>
@@ -168,7 +150,7 @@
                     android:id="@+id/pollutionStateImg"
                     android:layout_width="@dimen/icon_size"
                     android:layout_height="@dimen/icon_size"
-                    android:src="@drawable/images"
+                    android:scaleType="fitXY"
                     android:contentDescription="PollutionStateImg">
                 </ImageView>
 
@@ -319,12 +301,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="#FF0000">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
-                android:src="@drawable/images"
+                android:src="@drawable/position"
+                android:scaleType="fitXY"
                 android:contentDescription="Position">
             </ImageView>
 
@@ -348,13 +332,13 @@
             android:orientation="vertical"
             android:gravity="center"
             android:padding="8dp"
-
             android:onClick="openMapActivity">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
-                android:src="@drawable/images"
+                android:src="@drawable/world"
+                android:scaleType="fitXY"
                 android:contentDescription="Map">
             </ImageView>
 
@@ -378,13 +362,13 @@
             android:orientation="vertical"
             android:gravity="center"
             android:padding="8dp"
-
             android:onClick="openTipsActivity">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
-                android:src="@drawable/images"
+                android:src="@drawable/tips"
+                android:scaleType="fitXY"
                 android:contentDescription="Tips">
             </ImageView>
 

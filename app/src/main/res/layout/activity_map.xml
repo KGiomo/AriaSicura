@@ -40,7 +40,7 @@
             <ImageView
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
-                android:src="@drawable/images"
+                android:src="@drawable/position"
                 android:contentDescription="Position" />
 
             <TextView
@@ -60,12 +60,13 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:background="#FF0000">
 
             <ImageView
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
-                android:src="@drawable/images"
+                android:src="@drawable/world"
                 android:contentDescription="Map">
             </ImageView>
 
@@ -94,7 +95,7 @@
             <ImageView
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
-                android:src="@drawable/images"
+                android:src="@drawable/tips"
                 android:contentDescription="Tips">
             </ImageView>
 

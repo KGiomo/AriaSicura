@@ -10,8 +10,9 @@
         android:id="@+id/iconTips"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
-        android:layout_marginEnd="12dp"
-        android:src="@drawable/images" />
+        android:scaleType="fitXY"
+        android:layout_marginEnd="12dp">
+    </ImageView>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -24,13 +25,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold">
+        </TextView>
 
         <TextView
             android:id="@+id/textTips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="#666666" />
+            android:textColor="#666666">
+        </TextView>
+
     </LinearLayout>
 </LinearLayout>

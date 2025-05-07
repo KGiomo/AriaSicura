@@ -31,6 +31,7 @@ class widgetProvider : AppWidgetProvider() {
             views.setTextViewText(R.id.widget_nationText, "")
             views.setTextViewText(R.id.widget_qualityText, "-")
             views.setTextViewText(R.id.widget_AQI, "-")
+            views.setImageViewResource(R.id.widget_imageQuality, R.drawable.good) // Default temporanea
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
@@ -63,12 +64,14 @@ class widgetProvider : AppWidgetProvider() {
             val aqi = dataDTO.current.pollution.aqius
             views.setTextViewText(R.id.widget_AQI, aqi.toString())
 
-            val quality = when {
-                aqi <= 50 -> "Good"
-                aqi <= 100 -> "Moderate"
-                else -> "Unhealthy"
+            val (quality, iconResId) = when {
+                aqi <= 50 -> "Good" to R.drawable.good
+                aqi <= 100 -> "Moderate" to R.drawable.moderate
+                else -> "Unhealthy" to R.drawable.unhealthy
             }
+
             views.setTextViewText(R.id.widget_qualityText, quality)
+            views.setImageViewResource(R.id.widget_imageQuality, iconResId)
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }

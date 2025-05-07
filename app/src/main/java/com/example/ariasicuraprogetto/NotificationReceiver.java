@@ -39,7 +39,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, openAppIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "leo")
-                .setSmallIcon(R.drawable.ic_launcher_foreground) // Logo dell'app
+                .setSmallIcon(R.mipmap.ic_launcher_round) // Logo dell'app
                 .setContentTitle("ECO-DIGIFY")
                 .setContentText("AQI: " + (aqi == -1 ? "N/A" : aqi) + " - " + description)
                 .setContentIntent(pendingIntent)
