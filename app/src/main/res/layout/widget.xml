@@ -55,7 +55,9 @@
             android:id="@+id/widget_imageQuality"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            android:contentDescription="quality_icon">
+            android:scaleType="fitXY"
+            android:contentDescription="quality_icon"
+            android:src="@drawable/moderate">
         </ImageView>
 
         <LinearLayout

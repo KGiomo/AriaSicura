@@ -48,18 +48,24 @@
         android:background="#CCCCCC">
     </View>
 
-    <LinearLayout
-        android:id="@+id/tipsContent"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="6"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
         android:paddingHorizontal="16dp"
         android:paddingTop="32dp"
         android:paddingBottom="16dp"
-        android:background="#FFF8FF">
-    </LinearLayout>
+        android:background="#FFF8FF"
+        android:importantForAccessibility="no">
+
+        <LinearLayout
+            android:id="@+id/tipsContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+
+    </ScrollView>
 
     <!-- Separation Time -->
     <View
