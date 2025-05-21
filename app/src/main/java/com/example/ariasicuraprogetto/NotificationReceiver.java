@@ -31,7 +31,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("leo", "Notifiche Aria", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel("leo", "air notifications", NotificationManager.IMPORTANCE_HIGH);
             manager.createNotificationChannel(channel);
         }
 
