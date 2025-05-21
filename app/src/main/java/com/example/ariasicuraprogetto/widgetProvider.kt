@@ -20,13 +20,13 @@ class widgetProvider : AppWidgetProvider() {
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
-        Log.d("WidgetProvider", "onUpdate chiamato")
+        Log.d("WidgetProvider", "onUpdate called")
 
         if (context == null || appWidgetManager == null || appWidgetIds == null) return
 
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.widget)
-            views.setTextViewText(R.id.widget_cityText, "Caricamento...")
+            views.setTextViewText(R.id.widget_cityText, "Loading...")
             views.setTextViewText(R.id.widget_regionText, "")
             views.setTextViewText(R.id.widget_nationText, "")
             views.setTextViewText(R.id.widget_qualityText, "-")
@@ -39,12 +39,12 @@ class widgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
-        Log.d("WidgetProvider", "Widget eliminato")
+        Log.d("WidgetProvider", "Widget deleted")
     }
 
     override fun onDisabled(context: Context?) {
         super.onDisabled(context)
-        Log.d("WidgetProvider", "Ultimo widget rimosso")
+        Log.d("WidgetProvider", "Last widget removed")
     }
 
     companion object {
