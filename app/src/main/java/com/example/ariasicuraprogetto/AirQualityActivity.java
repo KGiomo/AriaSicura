@@ -193,7 +193,7 @@ public class AirQualityActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    Toast.makeText(this, "Errore nel caricamento paesi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading countries", Toast.LENGTH_SHORT).show();
                     resetStateAndCitySpinners();
                 });
         requestQueue.add(request);
@@ -220,7 +220,7 @@ public class AirQualityActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    Toast.makeText(this, "Errore nel caricamento stati", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading states", Toast.LENGTH_SHORT).show();
                     resetCitySpinner();
                 });
         requestQueue.add(request);
@@ -250,7 +250,7 @@ public class AirQualityActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    Toast.makeText(this, "Errore nel caricamento città", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading city", Toast.LENGTH_SHORT).show();
                     citySpinner.setEnabled(false);
                 });
         requestQueue.add(request);
@@ -269,8 +269,8 @@ public class AirQualityActivity extends AppCompatActivity {
                         }
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Errore nell'ottenere la posizione", Toast.LENGTH_SHORT).show();
-                        Log.e("Location", "Errore: " + e.getMessage());
+                        Toast.makeText(this, "Error getting location", Toast.LENGTH_SHORT).show();
+                        Log.e("Location", "Error: " + e.getMessage());
                     });
 
         } else {
@@ -296,7 +296,7 @@ public class AirQualityActivity extends AppCompatActivity {
                     if (location != null) {
                         fetchCityDataFromCoordinates(location.getLatitude(), location.getLongitude());
                     } else {
-                        Toast.makeText(AirQualityActivity.this, "Posizione non disponibile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AirQualityActivity.this, "Position not available", Toast.LENGTH_SHORT).show();
                     }
                 }
             }, Looper.getMainLooper());
@@ -309,7 +309,7 @@ public class AirQualityActivity extends AppCompatActivity {
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getLocation();
         } else {
-            Toast.makeText(this, "Permesso posizione negato", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -329,7 +329,7 @@ public class AirQualityActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(AirQualityActivity.this, "Errore di rete", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AirQualityActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                     tvResult.setVisibility(View.GONE);
                 });
             }
@@ -345,7 +345,7 @@ public class AirQualityActivity extends AppCompatActivity {
                         PollutionInfo.DataDTO.CurrentDTO.PollutionDTO p = data.getCurrent().getPollution();
 
                         String resultText = String.format(
-                                "Città: %s\nStato: %s\nNazione: %s\n\nAQI: %d\nUltimo aggiornamento: %s",
+                                "City: %s\nState: %s\nCountry: %s\n\nAQI: %d\nLatest update: %s",
                                 data.getCity(), data.getState(), data.getCountry(), p.getAqius(), p.getTs()
                         );
 
@@ -361,7 +361,7 @@ public class AirQualityActivity extends AppCompatActivity {
                         }
 
                     } else {
-                        tvResult.setText("Dati non disponibili");
+                        tvResult.setText("Data not available");
                     }
                 });
             }
