@@ -10,7 +10,7 @@ class widgetProvider : AppWidgetProvider() {
 
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
-        Log.d("WidgetProvider", "Widget creato")
+        Log.d("WidgetProvider", "Widget created")
     }
 
     override fun onUpdate(
