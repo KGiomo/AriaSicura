@@ -39,12 +39,12 @@ class widgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
-        Log.d("WidgetProvider", "Widget deleted")
+        Log.d("WidgetProvider", "Widget eliminato")
     }
 
     override fun onDisabled(context: Context?) {
         super.onDisabled(context)
-        Log.d("WidgetProvider", "Last widget removed")
+        Log.d("WidgetProvider", "Ultimo widget eliminato")
     }
 
     companion object {
@@ -65,9 +65,9 @@ class widgetProvider : AppWidgetProvider() {
             views.setTextViewText(R.id.widget_AQI, aqi.toString())
 
             val (quality, iconResId) = when {
-                aqi <= 50 -> "Good" to R.drawable.good
-                aqi <= 100 -> "Moderate" to R.drawable.moderate
-                else -> "Unhealthy" to R.drawable.unhealthy
+                aqi <= 50 -> "Buona" to R.drawable.good
+                aqi <= 100 -> "Moderata" to R.drawable.moderate
+                else -> "Malsana" to R.drawable.unhealthy
             }
 
             views.setTextViewText(R.id.widget_qualityText, quality)

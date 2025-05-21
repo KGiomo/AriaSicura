@@ -65,23 +65,24 @@ public class TipsActivity extends AppCompatActivity {
     public static List<Tips> getConsigliPerAQI(int aqi) {
         List<Tips> tips = new ArrayList<>();
 
-        if (aqi <= 50) {
-            tips.add(new Tips("Outdoor Activities", "You can carry out outdoor activities without concern."));
-            tips.add(new Tips("Sports and Walks", "A great time for sports or walks."));
-            tips.add(new Tips("Ventilate Indoors", "Take the opportunity to ventilate your home or office."));
-            tips.add(new Tips("Air Quality", "No precautions necessary."));
-        } else if (aqi <= 100) {
-            tips.add(new Tips("Sensitive Individuals", "If you have asthma or respiratory issues, consider limiting outdoor activity."));
-            tips.add(new Tips("Avoid Traffic", "Avoid traffic-heavy areas during peak hours."));
-            tips.add(new Tips("Moderate Activity", "Better to avoid prolonged physical effort outdoors."));
-            tips.add(new Tips("Monitor the Air", "Monitor the air quality in case it worsens later."));
-        } else {
-            tips.add(new Tips("Reduce Outdoor Time", "Especially if doing physical activity."));
-            tips.add(new Tips("Stay Indoors", "Keep windows closed and use air filters if available."));
-            tips.add(new Tips("Avoid Polluted Areas", "Avoid areas with heavy traffic or industrial zones."));
-            tips.add(new Tips("Protect Vulnerable Groups", "Children, elderly, and people with conditions should stay indoors."));
-            tips.add(new Tips("Be Prepared", "Keep medications handy if you have respiratory issues."));
+        if(aqi <= 50) {
+            tips.add(new Tips("Attività all'aperto", "Puoi svolgere attività all'aperto senza preoccupazioni."));
+            tips.add(new Tips("Sport e passeggiate", "È un ottimo momento per fare sport o passeggiate."));
+            tips.add(new Tips("Arieggiare gli ambienti", "Approfitta per arieggiare casa o ufficio."));
+            tips.add(new Tips("Qualità dell'aria", "Non sono necessarie precauzioni."));
+        }else if (aqi <= 100) {
+            tips.add(new Tips("Persone sensibili", "Se soffri di asma o problemi respiratori, limita le attività all'aperto."));
+            tips.add(new Tips("Evita il traffico", "Evita le zone trafficate nelle ore di punta."));
+            tips.add(new Tips("Attività moderata", "Meglio evitare sforzi fisici prolungati all'aperto."));
+            tips.add(new Tips("Monitora l'aria", "Controlla la qualità dell'aria nel caso peggiori più tardi."));
+        }else {
+            tips.add(new Tips("Riduci il tempo all'aperto", "Soprattutto se fai attività fisica."));
+            tips.add(new Tips("Rimani in casa", "Tieni le finestre chiuse e usa filtri d'aria se disponibili."));
+            tips.add(new Tips("Evita le zone inquinate", "Stai lontano da aree trafficate o zone industriali."));
+            tips.add(new Tips("Proteggi i più vulnerabili", "Bambini, anziani e persone con patologie dovrebbero restare in casa."));
+            tips.add(new Tips("Sii preparato", "Tieni a portata di mano i farmaci se hai problemi respiratori."));
         }
+
 
         return tips;
     }

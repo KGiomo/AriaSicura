@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         int aqi = dataDTO.getCurrent().getPollution().getAqius();
                         aqiUsText.setText(String.valueOf(aqi));
 
-                        // 🔥 Salva AQI per notifiche
+                        // Salva AQI per notifiche
                         SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
                         editor.putInt("last_aqi", aqi);
                         editor.apply();
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "Opening MainActivity");
+        Log.d(TAG, "Aprendo MainActivity");
 
         cityText = findViewById(R.id.city);
         stateText = findViewById(R.id.state);
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         lastUpdateTextView = findViewById(R.id.lastUpdate);
         aqiBox = findViewById(R.id.boxAQI);
         pollutionStateText = findViewById(R.id.pollutionStateText);
-        pollutionStateImg = findViewById(R.id.pollutionStateImg); // 🟢 aggiunto per l'immagine
+        pollutionStateImg = findViewById(R.id.pollutionStateImg); // aggiunto per l'immagine
 
         Intent intent = getIntent();
         if (intent.hasExtra("url")) {
@@ -156,9 +156,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void askNotificationPermission() {
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Receive notifications")
-                .setMessage("Would you like to receive a daily notification from AriaSicura?")
-                .setPositiveButton("Yes", (dialog, which) -> {
+                .setTitle("Ricevi notifiche")
+                .setMessage("Vuoi ricevere una notifica quotidiana da AriaSicura?")
+                .setPositiveButton("Sì", (dialog, which) -> {
                     SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
                     editor.putBoolean("notifications_enabled", true);
                     editor.apply();
@@ -228,17 +228,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateAQIVisuals(int aqi, TextView pollutionStateText, LinearLayout aqiBox, ImageView pollutionStateImg) {
         if (aqi <= 50) {
-            pollutionStateText.setText("Good");
+            pollutionStateText.setText("Buona");
             pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
             pollutionStateImg.setImageResource(R.drawable.good);
         } else if (aqi <= 100) {
-            pollutionStateText.setText("Moderate");
+            pollutionStateText.setText("Moderata");
             pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
             aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
             pollutionStateImg.setImageResource(R.drawable.moderate);
         } else {
-            pollutionStateText.setText("Unhealthy");
+            pollutionStateText.setText("Malsana");
             pollutionStateText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             aqiBox.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
             pollutionStateImg.setImageResource(R.drawable.unhealthy);

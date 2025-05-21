@@ -19,13 +19,13 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         String description;
         if (aqi == -1) {
-            description = "Unknown air quality.";
+            description = "Qualità dell'aria sconosciuta.";
         } else if (aqi <= 50) {
-            description = "Good air quality! Breathe hard.";
+            description = "Qualità dell'aria buona! Respira a pieni polmoni.";
         } else if (aqi <= 100) {
-            description = "Moderate air quality. Pay attention.";
+            description = "Qualità dell'aria moderata. Presta attenzione.";
         } else {
-            description = "Poor air quality! Avoid outdoor activities.";
+            description = "Qualità dell'aria scarsa! Evita le attività all'aperto.";
         }
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -40,7 +40,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "leo")
                 .setSmallIcon(R.mipmap.ic_launcher_round) // Logo dell'app
-                .setContentTitle("ECO-DIGIFY")
+                .setContentTitle("Aria Sicura")
                 .setContentText("AQI: " + (aqi == -1 ? "N/A" : aqi) + " - " + description)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
