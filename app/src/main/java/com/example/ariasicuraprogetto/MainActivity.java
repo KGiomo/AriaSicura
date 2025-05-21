@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     private void askNotificationPermission() {
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Receive notifications")
-                .setMessage("Would you like to receive a daily notification from ECO-DIGIFY?")
+                .setMessage("Would you like to receive a daily notification from AriaSicura?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
                     editor.putBoolean("notifications_enabled", true);
